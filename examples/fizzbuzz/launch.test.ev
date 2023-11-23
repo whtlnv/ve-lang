@@ -1,0 +1,12 @@
+register [test] from ev
+
+@when launching the app {
+  @given an app start event {
+    count = 3
+    publish(vDidStart, { arguments: [count] })
+  
+    @it should queue the number of messages requested {
+      publish (vExpect, { channel: countItem, count })
+    }
+  }
+}

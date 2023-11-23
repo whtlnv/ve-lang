@@ -1,0 +1,38 @@
+register [test] from ev
+
+expectEventValue = (value string) { publish (vExpect, { channel: vLog, equals: value }) }
+
+@when playing fizzbuzz {
+  @given a number that is not divisible by 3 or 5 {
+    publish (countItem, 1)
+  
+    @it should emit the number to vLog {
+      expectEventValue("1")
+    }
+  }
+
+  @given a number that is divisible by 3 {
+    publish (countItem, 3)
+  
+    @it should emit "fizz" to vLog {
+      expectEventValue("fizz")
+    }
+  }
+
+  @given a number that is divisible by 5 {
+    publish (countItem, 5)
+  
+    @it should emit "buzz" to vLog {
+      expectEventValue("buzz")
+    }
+  }
+
+  @given a number that is divisible by 3 and 5 {
+    publish (countItem, 15)
+  
+    @it should emit "fizzbuzz" to vLog {
+      expectEventValue("fizzbuzz")
+    }
+  }
+}
+  

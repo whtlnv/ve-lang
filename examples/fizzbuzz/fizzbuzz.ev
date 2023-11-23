@@ -1,0 +1,53 @@
+event countItem {
+  item: int
+}
+
+fizzbuzzer[countItem] {
+  emitText = (text string) { publish (vLog, text) }
+  item = countItem.item
+
+  if item % 15 == 0 {
+    emitText('fizzbuzz')
+  } else if item % 3 == 0 {
+    emitText('fizz')
+  } else if item % 5 == 0 {
+    emitText('buzz')
+  } else {
+    emitText(item.asString)
+    // instead of item.asString:
+    // register [toString] from ev
+    // publish (intToString, item, vLog)
+  }
+}
+
+// tokenizer
+  // -- publish (log, 'hello')
+// parser
+  // -- AST, 4 nodes
+// compiler
+// -- JS
+  // function a(text) {
+  //  console.log(text)
+  // }
+  // eventEmiter.listen('log', a)
+  // eventEmiter.emit('log', 'hello')
+// -- JS
+
+/*
+...
+queue each [1...count] (itemEvent, ...)
+queue (done)
+...
+
+class ReduceSum {
+  private sum: int = 0
+
+  listenToItems[itemEvent] {
+    sum += itemEvent.item
+  }
+
+  listenToDone[done] {
+    publish (vLog, sum.asString)
+  }
+}
+*/

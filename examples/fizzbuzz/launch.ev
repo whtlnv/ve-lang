@@ -1,0 +1,20 @@
+// Fizzbuzz
+// This example demonstrates how to queue events
+// Invoke this example using
+// ev ./fizzbuzz.ev 100
+
+register [system, console] from ev
+register [fizzbuzzer] from fizzbuzzer.ev
+
+// event countItem {
+//  item: int
+// }
+
+launch[vDidStart] {
+  count = vDidStart.arguments[0]
+  queue each [1...count] (countItem, ...)
+}
+
+terminate[vNothingLeftToDo] {
+  publish (vExit)
+}

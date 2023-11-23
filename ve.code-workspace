@@ -1,0 +1,20 @@
+{
+  "folders": [
+    {
+      "path": "examples"
+    },
+    {
+      "path": "ev-ts"
+    },
+    {
+      "path": "docs"
+    },
+    {
+      "path": "go-bootstrap"
+    }
+  ],
+  "settings": {
+    "codetogether.virtualCursorJoin": "ownVirtualCursor",
+    "codetogether.virtualCursorRemember": true
+  }
+}

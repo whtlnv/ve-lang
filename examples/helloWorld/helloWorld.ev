@@ -1,0 +1,9 @@
+// Hello World
+// 
+// Invoke this example using
+// ev ./helloWorld.ev
+
+register [system, console] from ev
+
+publish (vLog, 'Hello World!')
+publish (vExit)
