@@ -14,7 +14,7 @@ func NewLexer(broker *eventBroker.EventBroker) *Lexer {
 		broker: broker,
 	}
 
-	broker.On("lexer:in:scan", func(data interface{}) {
+	broker.On(lexer.ScanEvent(), func(data interface{}) {
 		lexer.source = data.([]byte)
 		lexer.scanSource()
 	})
