@@ -29,7 +29,7 @@ func TestLexerEmitsEachCharacter(t *testing.T) {
 	lexer := NewLexer(broker)
 
 	receivedChars := []byte{}
-	broker.On("lexer:out:didScan", func(data interface{}) {
+	broker.On(lexer.NewCharacterEvent(), func(data interface{}) {
 		receivedChars = append(receivedChars, data.(byte))
 	})
 
