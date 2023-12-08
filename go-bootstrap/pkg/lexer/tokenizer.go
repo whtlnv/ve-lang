@@ -2,9 +2,10 @@ package lexer
 
 import "github.com/whtlnv/ve-lang/go-bootstrap/pkg/eventBroker"
 
-const (
+const /* scan modes */ (
 	IDENTIFIER = iota
 	STRING
+	LINE_COMMENT
 )
 
 type Tokenizer struct {
@@ -20,6 +21,8 @@ func (tokenizer *Tokenizer) Separators() []byte {
 		return []byte(" ")
 	} else if tokenizer.scanMode == STRING {
 		return []byte{}
+	} else if tokenizer.scanMode == LINE_COMMENT {
+		return []byte("\n")
 	} else {
 		panic("Unknown scan mode")
 	}
@@ -61,6 +64,10 @@ func (tokenizer *Tokenizer) setScanMode(input byte) {
 	if tokenizer.scanMode == IDENTIFIER {
 		if input == '"' {
 			tokenizer.scanMode = STRING
+		}
+
+		if len(tokenizer.currentToken) == 1 && tokenizer.currentToken[0] == '/' && input == '/' {
+			tokenizer.scanMode = LINE_COMMENT
 		}
 	} else if tokenizer.scanMode == STRING {
 		if input == '"' {
