@@ -2,15 +2,27 @@ package lexer
 
 import "github.com/whtlnv/ve-lang/go-bootstrap/pkg/eventBroker"
 
+const (
+	IDENTIFIER = iota
+	STRING
+)
+
 type Tokenizer struct {
 	broker       *eventBroker.EventBroker
 	currentToken []byte
+	scanMode     int
 }
 
 // constants
 
 func (tokenizer *Tokenizer) Separators() []byte {
-	return []byte(" ")
+	if tokenizer.scanMode == IDENTIFIER {
+		return []byte(" ")
+	} else if tokenizer.scanMode == STRING {
+		return []byte{}
+	} else {
+		panic("Unknown scan mode")
+	}
 }
 
 // factory
@@ -45,10 +57,23 @@ func (tokenizer *Tokenizer) isSeparator(input byte) bool {
 	return false
 }
 
+func (tokenizer *Tokenizer) setScanMode(input byte) {
+	if tokenizer.scanMode == IDENTIFIER {
+		if input == '"' {
+			tokenizer.scanMode = STRING
+		}
+	} else if tokenizer.scanMode == STRING {
+		if input == '"' {
+			tokenizer.scanMode = IDENTIFIER
+		}
+	}
+}
+
 func (tokenizer *Tokenizer) processInput(input byte) {
 	if tokenizer.isSeparator(input) {
 		tokenizer.processTokenBreak([]byte{input})
 	} else {
+		tokenizer.setScanMode(input)
 		tokenizer.currentToken = append(tokenizer.currentToken, input)
 	}
 }
@@ -61,6 +86,7 @@ func (tokenizer *Tokenizer) processTokenBreak(tokenBreak []byte) {
 
 func (tokenizer *Tokenizer) clearCurrentToken() {
 	tokenizer.currentToken = []byte{}
+	tokenizer.scanMode = IDENTIFIER
 }
 
 // events

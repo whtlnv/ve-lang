@@ -18,7 +18,7 @@ func emitEachCharThenEOF(broker *eventBroker.EventBroker, src []byte) {
 
 // Tests
 
-func TestTokenizerListensToScannedCharactersUntilEOF(t *testing.T) {
+func TestTokenizerGroupsCharactersUntilEOF(t *testing.T) {
 	broker := eventBroker.NewEventBroker()
 
 	src := []byte("hello")
@@ -38,7 +38,7 @@ func TestTokenizerListensToScannedCharactersUntilEOF(t *testing.T) {
 	assert.Equal(t, expectedTokens, receivedTokens)
 }
 
-func TestTokenizerListensToScannedCharactersUntilBreak(t *testing.T) {
+func TestTokenizerGroupsCharactersUntilBreak(t *testing.T) {
 	broker := eventBroker.NewEventBroker()
 
 	src := []byte("hello world")
@@ -55,6 +55,28 @@ func TestTokenizerListensToScannedCharactersUntilBreak(t *testing.T) {
 		[]byte("hello"),
 		[]byte(" "),
 		[]byte("world"),
+		[]byte("EOF"),
+	}
+	assert.Equal(t, expectedTokens, receivedTokens)
+}
+
+func TestTokenizerGroupsCharactersInAString(t *testing.T) {
+	broker := eventBroker.NewEventBroker()
+
+	src := []byte("\"hello world\" \"foo bar\"")
+	tokenizer := NewTokenizer(broker)
+
+	receivedTokens := [][]byte{}
+	broker.On(tokenizer.TokenEvent(), func(data interface{}) {
+		receivedTokens = append(receivedTokens, data.([]byte))
+	})
+
+	emitEachCharThenEOF(broker, src)
+
+	expectedTokens := [][]byte{
+		[]byte("\"hello world\""),
+		[]byte(" "),
+		[]byte("\"foo bar\""),
 		[]byte("EOF"),
 	}
 	assert.Equal(t, expectedTokens, receivedTokens)
