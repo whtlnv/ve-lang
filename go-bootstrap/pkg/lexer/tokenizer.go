@@ -28,11 +28,11 @@ func NewTokenizer(broker *eventBroker.EventBroker) *Tokenizer {
 // do stuff
 
 func (tokenizer *Tokenizer) processInput(input byte) {
-	// if input == ' ' {
-	// 	tokenizer.processTokenBreak()
-	// } else {
-	tokenizer.currentToken = append(tokenizer.currentToken, input)
-	// }
+	if input == ' ' {
+		tokenizer.processTokenBreak([]byte(" "))
+	} else {
+		tokenizer.currentToken = append(tokenizer.currentToken, input)
+	}
 }
 
 func (tokenizer *Tokenizer) processTokenBreak(tokenBreak []byte) {
