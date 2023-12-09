@@ -66,7 +66,7 @@ func (tokenizer *Tokenizer) setScanMode(input byte) {
 			tokenizer.scanMode = STRING
 		}
 
-		if len(tokenizer.currentToken) == 1 && tokenizer.currentToken[0] == '/' && input == '/' {
+		if input == '#' {
 			tokenizer.scanMode = LINE_COMMENT
 		}
 	} else if tokenizer.scanMode == STRING {
