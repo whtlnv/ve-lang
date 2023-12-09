@@ -18,7 +18,7 @@ type Tokenizer struct {
 
 func (tokenizer *Tokenizer) Separators() []byte {
 	if tokenizer.scanMode == IDENTIFIER {
-		return []byte(" ")
+		return []byte(" .,;()[]{}")
 	} else if tokenizer.scanMode == STRING {
 		return []byte{}
 	} else if tokenizer.scanMode == LINE_COMMENT {

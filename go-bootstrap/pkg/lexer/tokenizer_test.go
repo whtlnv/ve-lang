@@ -61,7 +61,7 @@ func tokenizerGroupsCharactersUntilBreak(t *testing.T, separator byte) {
 }
 
 func TestTokenizerIdentifierBreaks(t *testing.T) {
-	separators := []byte(" ")
+	separators := []byte(" .,;()[]{}")
 
 	for _, separator := range separators {
 		tokenizerGroupsCharactersUntilBreak(t, separator)
