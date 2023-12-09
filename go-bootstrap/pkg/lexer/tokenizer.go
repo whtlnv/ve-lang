@@ -77,10 +77,10 @@ func (tokenizer *Tokenizer) setScanMode(input byte) {
 }
 
 func (tokenizer *Tokenizer) processInput(input byte) {
+	tokenizer.setScanMode(input)
 	if tokenizer.isSeparator(input) {
 		tokenizer.processTokenBreak([]byte{input})
 	} else {
-		tokenizer.setScanMode(input)
 		tokenizer.currentToken = append(tokenizer.currentToken, input)
 	}
 }
