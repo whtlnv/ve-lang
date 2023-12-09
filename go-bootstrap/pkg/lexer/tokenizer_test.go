@@ -38,10 +38,10 @@ func TestTokenizerGroupsCharactersUntilEOF(t *testing.T) {
 	assert.Equal(t, expectedTokens, receivedTokens)
 }
 
-func TestTokenizerGroupsCharactersUntilBreak(t *testing.T) {
+func tokenizerGroupsCharactersUntilBreak(t *testing.T, separator []byte) {
 	broker := eventBroker.NewEventBroker()
 
-	src := []byte("hello world")
+	src := []byte("hello" + string(separator) + "world")
 	tokenizer := NewTokenizer(broker)
 
 	receivedTokens := [][]byte{}
@@ -53,11 +53,21 @@ func TestTokenizerGroupsCharactersUntilBreak(t *testing.T) {
 
 	expectedTokens := [][]byte{
 		[]byte("hello"),
-		[]byte(" "),
+		separator,
 		[]byte("world"),
 		[]byte("EOF"),
 	}
 	assert.Equal(t, expectedTokens, receivedTokens)
+}
+
+func TestTokenizerBreakWithCharacters(t *testing.T) {
+	separators := [][]byte{
+		[]byte(" "),
+	}
+
+	for _, separator := range separators {
+		tokenizerGroupsCharactersUntilBreak(t, separator)
+	}
 }
 
 func TestTokenizerGroupsCharactersInAString(t *testing.T) {
