@@ -7,26 +7,105 @@ import (
 	"github.com/whtlnv/ve-lang/go-bootstrap/pkg/eventBroker"
 )
 
-func TestTokenizerCanTokenizePublishKeyword(t *testing.T) {
+// Helpers
+
+func emitEachCharThenEOF(broker *eventBroker.EventBroker, src []byte) {
+	for _, char := range src {
+		broker.Emit("tokenizer:in:scan", char)
+	}
+	broker.Emit("tokenizer:in:EOF", nil)
+}
+
+// Tests
+
+func TestTokenizerGroupsCharactersUntilEOF(t *testing.T) {
 	broker := eventBroker.NewEventBroker()
 
+	src := []byte("hello")
 	tokenizer := NewTokenizer(broker)
 
-	want := &Token{
-		kind:  "PUBLISH",
-		value: "publish",
-	}
-
-	var got *Token
-	broker.On(tokenizer.NewTokenEvent(), func(data interface{}) {
-		got = data.(*Token)
+	receivedTokens := [][]byte{}
+	broker.On(tokenizer.TokenEvent(), func(data interface{}) {
+		receivedTokens = append(receivedTokens, data.([]byte))
 	})
 
-	source := []byte("publish")
-	for _, char := range source {
-		broker.Emit(tokenizer.NewCharacterEvent(), char)
-	}
-	broker.Emit(tokenizer.TokenEndEvent(), nil)
+	emitEachCharThenEOF(broker, src)
 
-	assert.Equal(t, want, got)
+	expectedTokens := [][]byte{
+		[]byte("hello"),
+		[]byte("EOF"),
+	}
+	assert.Equal(t, expectedTokens, receivedTokens)
+}
+
+func tokenizerGroupsCharactersUntilBreak(t *testing.T, separator byte) {
+	broker := eventBroker.NewEventBroker()
+
+	src := []byte("hello" + string(separator) + "world")
+	tokenizer := NewTokenizer(broker)
+
+	receivedTokens := [][]byte{}
+	broker.On(tokenizer.TokenEvent(), func(data interface{}) {
+		receivedTokens = append(receivedTokens, data.([]byte))
+	})
+
+	emitEachCharThenEOF(broker, src)
+
+	expectedTokens := [][]byte{
+		[]byte("hello"),
+		{separator},
+		[]byte("world"),
+		[]byte("EOF"),
+	}
+	assert.Equal(t, expectedTokens, receivedTokens)
+}
+
+func TestTokenizerIdentifierBreaks(t *testing.T) {
+	separators := []byte(" .,;()[]{}")
+
+	for _, separator := range separators {
+		tokenizerGroupsCharactersUntilBreak(t, separator)
+	}
+}
+
+func TestTokenizerGroupsCharactersInAString(t *testing.T) {
+	broker := eventBroker.NewEventBroker()
+
+	src := []byte("\"hello world\" \"foo bar\"")
+	tokenizer := NewTokenizer(broker)
+
+	receivedTokens := [][]byte{}
+	broker.On(tokenizer.TokenEvent(), func(data interface{}) {
+		receivedTokens = append(receivedTokens, data.([]byte))
+	})
+
+	emitEachCharThenEOF(broker, src)
+
+	expectedTokens := [][]byte{
+		[]byte("\"hello world\""),
+		[]byte(" "),
+		[]byte("\"foo bar\""),
+		[]byte("EOF"),
+	}
+	assert.Equal(t, expectedTokens, receivedTokens)
+}
+
+func TestTokenizerGroupsCharactersInALineComment(t *testing.T) {
+	broker := eventBroker.NewEventBroker()
+
+	src := []byte("# hello world")
+	tokenizer := NewTokenizer(broker)
+
+	receivedTokens := [][]byte{}
+	broker.On(tokenizer.TokenEvent(), func(data interface{}) {
+		receivedTokens = append(receivedTokens, data.([]byte))
+	})
+
+	emitEachCharThenEOF(broker, src)
+
+	expectedTokens := [][]byte{
+		[]byte("# hello world"),
+		[]byte("EOF"),
+	}
+	assert.Equal(t, expectedTokens, receivedTokens)
 }
