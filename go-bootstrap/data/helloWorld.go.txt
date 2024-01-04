@@ -2,11 +2,19 @@ package main
 
 import (
 	"fmt"
-	"os"
 )
 
 // Hello world
 func main() {
 	fmt.Println("Hello world!")
-	return 0
+}
+
+
+func stuff() {
+		myVar := true
+	if myVar && false {
+		return 1 + 2.3
+	} else {
+		return "💩"
+	}
 }

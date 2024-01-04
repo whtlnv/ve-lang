@@ -1,0 +1,25 @@
+LINE_COMMENT
+  STARTS WITH           //
+  BREAKS WITH           \n
+
+BLOCK_COMMENT
+  STARTS WITH           /*
+  ENDS WITH             */
+
+LITERAL
+  STARTS WITH           - . 0 1 2 3 4 5 6 7 8 9
+  BREAKS WITH      not( - . 0 1 2 3 4 5 6 7 8 9 b o x e)
+
+ONE_CHAR_OPERATOR  
+  CONTAINS              , ; ( ) [ ] { } ?
+
+OPERATOR
+  CONTAINS              . / - + = * & | < >
+
+STRING
+  STARTS WITH           "
+  ENDS WITH             "
+
+IDENTIFIER
+  STARTS WITH           a-z A-Z _
+  CONTAINS              a-z A-Z _ 0-9
