@@ -1,4 +1,5 @@
 register [test] from ev
+register [fizzbuzzer] from fizzbuzz
 
 expectEventValue = (value string) { publish (vExpect, { channel: vLog, equals: value }) }
 
