@@ -132,3 +132,19 @@ Ideally the language should provide a robust set of compilation tools that makes
 ### SOLID principles
 
 The language should enforce
+
+## Comparison with other languages
+
+### A metaphor
+
+If we were to print a whole program into a continous piece of paper, we can appreciate that understanding said program will require some sort of structure or organization; otherwise it will require from the reader to read the whole program from start to finish to understand it.
+
+Programming languages take a similar approach to organize a program, which (obviously) is: to divide the program into smaller pieces that can be read independently. Not only can they be understood on their own, they can be reused in several places inside the program, and even in other programs.
+
+We can imagine cutting the paper into smaller pieces, and putting those pieces into envelopes to isolate them. To make it easier to understand, we can label each envelope with a title. If the title is descriptive enough, we can understand the whole program by reading the titles of the envelopes.
+
+All the program will be divided and organized logically in their respective envelopes. and at the end, the envelopes will be put in a big envelope, and the big envelope will be labeled with the title of the program.
+
+If we want to change the behavior of the program, we start by opening the big envelope, then we look for the envelope that could contain the specific behaviour we want to change. We open up that envelope and scan the piece of paper and evelopes inside; this process will continue recursively. Hopefully, the titles of the envelopes are descriptive enough to guide us to the right place. If we find the right envelope, we open it and change the content of the piece of paper.
+
+What would happen if, instead of putting all the program in envelopes, and then putting the envelopes inside of other envelopes, we broke the program into pieces and put them in order, one after the other. We would label each piece as we did with the envelopes, but we would lay the sequence of pieces exposed.
