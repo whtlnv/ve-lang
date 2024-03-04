@@ -109,3 +109,46 @@ func TestTokenizerGroupsCharactersInALineComment(t *testing.T) {
 	}
 	assert.Equal(t, expectedTokens, receivedTokens)
 }
+
+func TestTokenizerEmitsDifferentKindOfTokens(t *testing.T) {
+	broker := eventBroker.NewEventBroker()
+
+	src := []byte("\"hello world\"# this is a string")
+	tokenizer := NewTokenizer(broker)
+
+	receivedTokens := [][]byte{}
+	broker.On(tokenizer.TokenEvent(), func(data interface{}) {
+		receivedTokens = append(receivedTokens, data.([]byte))
+	})
+
+	emitEachCharThenEOF(broker, src)
+
+	expectedTokens := [][]byte{
+		[]byte("\"hello world\""),
+		[]byte("# this is a string"),
+		[]byte("EOF"),
+	}
+	assert.Equal(t, expectedTokens, receivedTokens)
+}
+
+// func TestTokenizerGroupsOperandCharacters(t *testing.T) {
+// 	broker := eventBroker.NewEventBroker()
+
+// 	src := []byte("1+2")
+// 	tokenizer := NewTokenizer(broker)
+
+// 	receivedTokens := [][]byte{}
+// 	broker.On(tokenizer.TokenEvent(), func(data interface{}) {
+// 		receivedTokens = append(receivedTokens, data.([]byte))
+// 	})
+
+// 	emitEachCharThenEOF(broker, src)
+
+// 	expectedTokens := [][]byte{
+// 		[]byte("1"),
+// 		[]byte("+"),
+// 		[]byte("2"),
+// 		[]byte("EOF"),
+// 	}
+// 	assert.Equal(t, expectedTokens, receivedTokens)
+// }

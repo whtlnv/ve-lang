@@ -1,6 +1,8 @@
 package lexer
 
-import "github.com/whtlnv/ve-lang/go-bootstrap/pkg/eventBroker"
+import (
+	"github.com/whtlnv/ve-lang/go-bootstrap/pkg/eventBroker"
+)
 
 const /* scan modes */ (
 	IDENTIFIER = iota
@@ -13,6 +15,18 @@ type Tokenizer struct {
 	currentToken []byte
 	scanMode     int
 }
+
+// Clean up later
+
+type Classifier interface {
+}
+
+type IdentifierClassifier struct{}
+type NumberClassifier struct{}
+type OperatorClassifier struct{}
+type StringClassifier struct{}
+type LineCommentClassifier struct{}
+type BlockCommentClassifier struct{}
 
 // constants
 
@@ -42,6 +56,7 @@ func NewTokenizer(broker *eventBroker.EventBroker) *Tokenizer {
 	})
 
 	broker.On(tokenizer.EOFEvent(), func(data interface{}) {
+		// TODO: just evict the token
 		tokenizer.processTokenBreak([]byte("EOF"))
 	})
 
@@ -85,10 +100,14 @@ func (tokenizer *Tokenizer) processInput(input byte) {
 	}
 }
 
-func (tokenizer *Tokenizer) processTokenBreak(tokenBreak []byte) {
+func (tokenizer *Tokenizer) evictToken() {
 	tokenizer.broker.Emit(tokenizer.TokenEvent(), tokenizer.currentToken)
-	tokenizer.broker.Emit(tokenizer.TokenEvent(), tokenBreak)
 	tokenizer.clearCurrentToken()
+}
+
+func (tokenizer *Tokenizer) processTokenBreak(tokenBreak []byte) {
+	tokenizer.evictToken()
+	tokenizer.broker.Emit(tokenizer.TokenEvent(), tokenBreak)
 }
 
 func (tokenizer *Tokenizer) clearCurrentToken() {
