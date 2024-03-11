@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/whtlnv/ve-lang/go-bootstrap/internal/testUtilities"
 	"github.com/whtlnv/ve-lang/go-bootstrap/pkg/eventBroker"
 )
 
@@ -20,7 +21,7 @@ func TestPositionCounterEmitsColumnNumber(t *testing.T) {
 		receivedCharacters = append(receivedCharacters, data.(CharacterEvent))
 	})
 
-	emitEachChar(broker, src, counter.ScanEvent())
+	testUtilities.EmitEachChar(broker, src, counter.ScanEvent())
 
 	expectedCharacters := []CharacterEvent{
 		{character: 'H', lineNumber: 1, columnNumber: 1},
@@ -41,7 +42,7 @@ func TestPositionCounterEmitsLineNumber(t *testing.T) {
 		receivedCharacters = append(receivedCharacters, data.(CharacterEvent))
 	})
 
-	emitEachChar(broker, src, counter.ScanEvent())
+	testUtilities.EmitEachChar(broker, src, counter.ScanEvent())
 
 	expectedCharacters := []CharacterEvent{
 		{character: 'H', lineNumber: 1, columnNumber: 1},

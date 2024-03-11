@@ -4,16 +4,9 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/whtlnv/ve-lang/go-bootstrap/internal/testUtilities"
 	"github.com/whtlnv/ve-lang/go-bootstrap/pkg/eventBroker"
 )
-
-// Helpers
-
-func emitEachChar(broker *eventBroker.EventBroker, src []byte, topic string) {
-	for _, char := range src {
-		broker.Emit(topic, char)
-	}
-}
 
 // Tests
 
@@ -28,7 +21,7 @@ func TestTokenizerGroupsCharactersUntilEOF(t *testing.T) {
 		receivedTokens = append(receivedTokens, data.([]byte))
 	})
 
-	emitEachChar(broker, src, tokenizer.ScanEvent())
+	testUtilities.EmitEachChar(broker, src, tokenizer.ScanEvent())
 	broker.Emit(tokenizer.EOFEvent(), nil)
 
 	expectedTokens := [][]byte{
@@ -49,7 +42,7 @@ func tokenizerGroupsCharactersUntilBreak(t *testing.T, separator byte) {
 		receivedTokens = append(receivedTokens, data.([]byte))
 	})
 
-	emitEachChar(broker, src, tokenizer.ScanEvent())
+	testUtilities.EmitEachChar(broker, src, tokenizer.ScanEvent())
 	broker.Emit(tokenizer.EOFEvent(), nil)
 
 	expectedTokens := [][]byte{
@@ -80,7 +73,7 @@ func TestTokenizerGroupsCharactersInAString(t *testing.T) {
 		receivedTokens = append(receivedTokens, data.([]byte))
 	})
 
-	emitEachChar(broker, src, tokenizer.ScanEvent())
+	testUtilities.EmitEachChar(broker, src, tokenizer.ScanEvent())
 	broker.Emit(tokenizer.EOFEvent(), nil)
 
 	expectedTokens := [][]byte{
@@ -103,7 +96,7 @@ func TestTokenizerGroupsCharactersInALineComment(t *testing.T) {
 		receivedTokens = append(receivedTokens, data.([]byte))
 	})
 
-	emitEachChar(broker, src, tokenizer.ScanEvent())
+	testUtilities.EmitEachChar(broker, src, tokenizer.ScanEvent())
 	broker.Emit(tokenizer.EOFEvent(), nil)
 
 	expectedTokens := [][]byte{
